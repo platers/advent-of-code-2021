@@ -35,7 +35,7 @@ impl Board {
 
 fn build_board(s:&str) -> Board {
     Board {
-        arr: s.split('\n').map(
+        arr: s.lines().map(
             |l| l.split_whitespace().map(|t| t.parse().unwrap()).collect()
         ).collect()
     }
@@ -43,7 +43,7 @@ fn build_board(s:&str) -> Board {
 
 fn main() {
     let input = include_str!("../input.txt");
-    let (first, rest) = input.split_at(input.find('\n').unwrap());
+    let (first, rest) = input.split_once("\n\n").unwrap();
 
     let picks:Vec<i32> = first.split(',').map(|c| c.parse().unwrap()).collect();
     
@@ -57,6 +57,9 @@ fn main() {
 
     println!("Ans {}", res.1);
 }
+
+
+
 
 // tests
 #[test]
