@@ -7,6 +7,7 @@
 for i in $(find . -maxdepth 1 -type d -name "day$1*"); do
     echo "Running $i"
     cd $i
+    cargo test
     cargo run
     cd ..
 done
