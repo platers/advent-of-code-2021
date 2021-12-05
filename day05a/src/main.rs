@@ -1,19 +1,17 @@
 use num::integer::gcd;
-use regex::Regex;
 
 type Point = (isize, isize);
 type Line = (Point, Point);
 
-fn ps(s: &str) -> isize {
-    s.parse().unwrap()
-}
+use nom::*;
+use nom::sequence::separated_pair;
+use nom::bytes::complete::*;
+use nom::combinator::*;
 
 fn main() {
     let input = include_str!("../input.txt");
-    let re = Regex::new(r"(\d+),(\d+) -> (\d+),(\d+)").unwrap();
     let lines:Vec<Line> = input.lines().map(|l| {
-        let caps = re.captures(l).unwrap();
-        ((ps(&caps[1]), ps(&caps[2])), (ps(&caps[3]), ps(&caps[4])))
+        line(l).unwrap().1
     }).collect();
 
     let mut grid = [[0; 1000]; 1000];
@@ -45,4 +43,20 @@ fn main() {
         .count();
     println!("{}", ans);
     
+}
+
+fn isize(i:&str) -> IResult<&str, isize> {
+    map_res(nom::character::complete::digit1, |s:&str| s.parse::<isize>())(i)
+}
+
+fn point(i: &str) -> IResult<&str, Point> {
+    separated_pair(
+        isize,
+        nom::character::complete::char(','),
+        isize
+    )(i)
+}
+
+fn line(i: &str) -> IResult<&str, Line> {
+    separated_pair(point, tag(" -> "), point)(i)
 }
