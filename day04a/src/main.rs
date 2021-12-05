@@ -10,22 +10,15 @@ fn main() {
             if x == &pick {*x = -1};
         }));
         
-        let checks = [
-            boards.iter().find(
-                |b| (0..5).any(|i| (0..5).all(|j| b[i*5 + j] == -1))),
-            boards.iter().find(
-                |b| (0..5).any(|i| (0..5).all(|j| b[i + j*5] == -1)))
-        ];
-        for b in checks.iter() {
-            match b {
-                Some(b) => {
-                    let score = b.iter().filter(|x| **x != -1).sum::<i32>() * pick;
-                    println!("{}", score);
-                    break 'out;
-                }
-                None => {}
+        match boards.iter().find(
+            |b| (0..5).any(|i| (0..5).all(|j| b[i*5 + j] == -1)) ||
+                (0..5).any(|i| (0..5).all(|j| b[i + j*5] == -1))) {
+            Some(b) => {
+                let score = b.iter().filter(|x| **x != -1).sum::<i32>() * pick;
+                println!("{}", score);
+                break 'out;
             }
+            None => {}
         }
     }
-    
 }
