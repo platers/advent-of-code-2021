@@ -1,23 +1,20 @@
-use itertools::Itertools;
 use num::integer::gcd;
+use regex::Regex;
 
 type Point = (isize, isize);
 type Line = (Point, Point);
 
+fn ps(s: &str) -> isize {
+    s.parse().unwrap()
+}
+
 fn main() {
     let input = include_str!("../input.txt");
+    let re = Regex::new(r"(\d+),(\d+) -> (\d+),(\d+)").unwrap();
     let lines:Vec<Line> = input.lines().map(|l| {
-        l.split_whitespace()
-            .filter(|t| t.chars().nth(0).unwrap().is_digit(10))
-            .map(|t| {
-               t.split(',')
-                .map(|x| x.parse().unwrap())
-                .collect_tuple()
-                .unwrap()
-            }).collect_tuple().unwrap()
+        let caps = re.captures(l).unwrap();
+        ((ps(&caps[1]), ps(&caps[2])), (ps(&caps[3]), ps(&caps[4])))
     }).collect();
-
-    println!("{:?}", lines);
 
     let mut grid = [[0; 1000]; 1000];
 
