@@ -9,8 +9,8 @@ fn main() {
 
     let mut g = HashMap::new();
     for (a, b) in edges {
-        g.entry(String::from(a)).or_insert(vec![]).push(b);
-        g.entry(String::from(b)).or_insert(vec![]).push(a);
+        g.entry(a).or_insert(vec![]).push(b);
+        g.entry(b).or_insert(vec![]).push(a);
     }
 
     let mut small_caves = vec![];
@@ -18,7 +18,7 @@ fn main() {
     println!("{}", num_paths);
 }
 
-fn dfs(g: &HashMap<String, Vec<&str>>, cur: &String, small_caves: &mut Vec<String>) -> usize {
+fn dfs<'a>(g: &HashMap<&'a str, Vec<&'a str>>, cur: &'a str, small_caves: &mut Vec<&'a str>) -> usize {
     if cur == "end" {
         return 1;
     }
@@ -29,11 +29,11 @@ fn dfs(g: &HashMap<String, Vec<&str>>, cur: &String, small_caves: &mut Vec<Strin
 
     let mut num_paths = 0;
     if cur.to_lowercase() == *cur {
-        small_caves.push(cur.clone());
+        small_caves.push(&cur);
     }
 
     for next in g.get(cur).unwrap() {
-        num_paths += dfs(g, &String::from(*next), small_caves);
+        num_paths += dfs(g, &next, small_caves);
     }
 
     if cur.to_lowercase() == *cur {
