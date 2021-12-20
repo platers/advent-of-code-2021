@@ -50,8 +50,8 @@ impl Scanner {
         let absolutes = self.beacons.iter()
             .map(|b| b.translate(&self.pos))
             .collect::<Vec<Point>>();
-        for &b in beacons[..beacons.len() - 11].iter() {
-            for a in &absolutes {
+        for &b in beacons[..10].iter() {
+            for a in &absolutes[..13] {
                 let translate_vec = Point {
                     x: a.x - b.x,
                     y: a.y - b.y,
@@ -60,11 +60,11 @@ impl Scanner {
 
                 let new_absolutes = beacons.iter()
                     .map(|b| b.translate(&translate_vec))
-                    .collect::<Vec<Point>>();
+                    .collect::<HashSet<Point>>();
                 
                 let mut intersection_size = 0;
-                for &a in &new_absolutes {
-                    if absolutes.contains(&a) {
+                for &a in &absolutes {
+                    if new_absolutes.contains(&a) {
                         intersection_size += 1;
                     }
                 }
@@ -83,8 +83,8 @@ impl Scanner {
             let beacons = self.beacons.iter()
                 .map(|p| p.permute_axis(&permutation))
                 .collect::<Vec<Point>>();
-            let flips = [[1, 1, 1], [1, 1, -1], [1, -1, 1], [1, -1, -1], [-1, 1, 1], [-1, 1, -1], [-1, -1, 1], [-1, -1, -1]];
-            for flip in &flips {
+                let flips = [[1, 1, 1], [1, 1, -1], [1, -1, 1], [1, -1, -1], [-1, 1, 1], [-1, 1, -1], [-1, -1, 1], [-1, -1, -1]];
+                for flip in &flips {
                 let beacons = beacons.iter().map(|p| p.flip(flip)).collect::<Vec<Point>>();
                 match other.match_fixed_beacons(&beacons) {
                     Some(p) => {
