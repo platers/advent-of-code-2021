@@ -1,4 +1,4 @@
-
+use itertools::Itertools;
 type Num = Vec<(u32, u32)>;
 
 fn main() {
@@ -17,13 +17,19 @@ fn main() {
         })
         .collect::<Vec<Num>>();
     
-    let result = nums.into_iter().reduce(|mut acc, num| {
-        acc.extend(num);
-        acc = acc.iter().map(|(d, n)| (d + 1, *n)).collect();
-        reduce(acc)
-    }).unwrap();
-    println!("{:?}", result);
-    println!("{}", magnitude(&result));
+    let result = nums.iter().permutations(2)
+        .map(|p| {
+            magnitude(&add(&p[0], &p[1]))
+        })
+        .max().unwrap();
+    println!("{}", result);
+}
+
+fn add(a: &Num, b: &Num) -> Num {
+    let mut num = a.clone();
+    num.extend(b);
+    num = num.iter().map(|(d, n)| (d + 1, *n)).collect();
+    reduce(num)
 }
 
 fn reduce(mut num: Num) -> Num {
