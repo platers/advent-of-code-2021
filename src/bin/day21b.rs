@@ -1,4 +1,5 @@
 use std::cmp::min;
+use itertools::iproduct;
 // state = (p1 score, p2 score, p1 pos, p2 pos)
 // state sizez = (21, 21, 10, 10)
 fn main() {
@@ -9,25 +10,20 @@ fn main() {
             if s1 >= 21 {
                 continue;
             }
-            // println!("{} {}", s1, s2);
 
             for p1 in 0..10 {
                 for p2 in 0..10 {
 
-                    for r1 in 1..=3 {
-                        for r2 in 1..=3 {
-                            for r3 in 1..=3 {
-                                let r = r1 + r2 + r3;
-                                let n_p1 = (p1 + r) % 10;
-                                let n_s1 = s1 + n_p1 + 1;
-                                if n_s1 >= 21 {
-                                    dp[s1][s2][p1][p2].0 += 1;
-                                } else {
-                                    let (a, b) = dp[s2][n_s1][p2][n_p1];
-                                    dp[s1][s2][p1][p2].0 += b;
-                                    dp[s1][s2][p1][p2].1 += a;
-                                }
-                            }
+                    for (r1, r2, r3) in iproduct!(1..=3, 1..=3, 1..=3) {
+                        let r = r1 + r2 + r3;
+                        let n_p1 = (p1 + r) % 10;
+                        let n_s1 = s1 + n_p1 + 1;
+                        if n_s1 >= 21 {
+                            dp[s1][s2][p1][p2].0 += 1;
+                        } else {
+                            let (a, b) = dp[s2][n_s1][p2][n_p1];
+                            dp[s1][s2][p1][p2].0 += b;
+                            dp[s1][s2][p1][p2].1 += a;
                         }
                     }
                 }
